@@ -161,31 +161,31 @@ public class Game {
         List<Item> noItems = new ArrayList<>();
 
         List<Item> survivalGuide = new ArrayList<>();
-        survivalGuide.add(new Item("Survival Guide"));
+        survivalGuide.add(new Item("Survival Guide", "A handy Survival Guide"));
 
         List<Item> loot = new ArrayList<>();
-        loot.add(new Item("Coin Pouch"));
-        loot.add(new Item("Bread"));
-        loot.add(new Item("Crystal Dagger"));
+        loot.add(new Item("Coin Pouch", "Small pouch of coins"));
+        loot.add(new Item("Bread", "A fresh loaf of bread"));
+        loot.add(new Item("Crystal Dagger", "A small crystal dagger"));
 
         List<Item> mysteryBrew = new ArrayList<>();
-        mysteryBrew.add(new Item("Mystery Brew"));
+        mysteryBrew.add(new Item("Mystery Brew", "A potion of something?"));
 
         List<Item> mysteryBrewAndHealth = new ArrayList<>();
-        mysteryBrewAndHealth.add(new Item("Mystery Brew"));
-        mysteryBrewAndHealth.add(new Item("Health Potion"));
+        mysteryBrewAndHealth.add(new Item("Mystery Brew", "A potion of something?"));
+        mysteryBrewAndHealth.add(new Item("Health Potion", "Restores health"));
 
         List<Item> roomVoucher = new ArrayList<>();
-        roomVoucher.add(new Item("Room Voucher"));
+        roomVoucher.add(new Item("Room Voucher", "A voucher for one free stay at the Inn"));
 
         List<Item> cloak = new ArrayList<>();
-        cloak.add(new Item("Cloak"));
+        cloak.add(new Item("Cloak", "A black cloak with a hood"));
 
         List<Item> coinPouch = new ArrayList<>();
-        coinPouch.add(new Item("Coin Pouch"));
+        coinPouch.add(new Item("Coin Pouch", "Small pouch of coins"));
 
         List<Item> shield = new ArrayList<>();
-        shield.add(new Item("Shield"));
+        shield.add(new Item("Shield", "A well loved circle sheild"));
 
         // Opening Scene s1 //
         Scene s1 = new Scene("s1", """
