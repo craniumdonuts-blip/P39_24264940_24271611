@@ -14,7 +14,7 @@ public class Scene {
     private String sceneId;
     private String sceneDesc;
     // Trait specific scenes
-    private Map<TraitType, String> varDialogue; 
+    private Map<TraitType, String> varDialogue;
     private List<Choice> choices;
     private Npc npc;
     private boolean isEndScene;
@@ -80,12 +80,12 @@ public class Scene {
     public void addVarDialogue(TraitType trait, String description) {
         varDialogue.put(trait, description);
     }
-    
+
     // Getters
     public String getSceneId() {
         return sceneId;
     }
-    
+
     public boolean isEndScene() {
         return isEndScene;
     }
