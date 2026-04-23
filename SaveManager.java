@@ -30,7 +30,7 @@ public class SaveManager {
 
     public void save(Player player, String sceneId, int slot) {
         if (!isValidSlot(slot)) {
-            System.out.println("Invalid slot — must be between 1 and " + MAX_SLOTS + ".");
+            System.out.println("[INVALID SLOT]");
             return;
         }
 
@@ -55,12 +55,12 @@ public class SaveManager {
 
     public Player load(int slot) {
         if (!isValidSlot(slot)) {
-            System.out.println("Invalid slot — must be between 1 and " + MAX_SLOTS + ".");
+            System.out.println("[INVALID SLOT]");
             return null;
         }
 
         if (!slotExists(slot)) {
-            System.out.println("No save found in slot " + slot + ".");
+            System.out.println("No save found in slot " + slot);
             return null;
         }
 
@@ -77,13 +77,13 @@ public class SaveManager {
             Player player = new Player();
             player.setName(name);
             player.setTrait(TraitType.valueOf(traitStr));
-            player.addPoints(points);
+            player.changeTotalPoints(points);
             player.getInventory().fromSaveString(invString);
 
             // Store sceneId for Game to get
             this.lastLoadedSceneId = sceneId;
 
-            System.out.println("Game loaded from slot " + slot + ".");
+            System.out.println("Game loaded from slot " + slot);
             return player;
 
         } catch (IOException | NumberFormatException e) {
@@ -94,16 +94,16 @@ public class SaveManager {
 
     public void deleteFile(int slot) {
         if (!isValidSlot(slot)) {
-            System.out.println("Invalid slot — must be between 1 and " + MAX_SLOTS + ".");
+            System.out.println("[INVALID SLOT]");
             return;
         }
 
         File file = getFile(slot);
         if (file.exists()) {
             file.delete();
-            System.out.println("Save slot " + slot + " deleted.");
+            System.out.println("Save slot " + slot + " deleted");
         } else {
-            System.out.println("No save found in slot " + slot + ".");
+            System.out.println("No save found in slot " + slot);
         }
     }
 
