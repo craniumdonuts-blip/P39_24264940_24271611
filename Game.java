@@ -80,7 +80,7 @@ public class Game {
         }
 
         // Update points
-        player.addPoints(choice.getPointValue());
+        player.changeTotalPoints(choice.getPointValue());
 
         // Add item (if in choice)
         for (Item item : choice.getGivenItems()) {
