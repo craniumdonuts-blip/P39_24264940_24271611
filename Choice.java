@@ -16,9 +16,26 @@ public class Choice {
     private Item requiredItem;
     private TraitType requiredTrait;
     private String nextSceneID;
-    private List<Item> giveItem;
+    private List<Item> givenItems;
     private int number; 
     private String transitionText;
+    
+    // Choice s1c1 = new Choice(1, "Follow the path", "s2", 10, null, noItems);
+
+    // constructor
+    public Choice (
+            int number, 
+            String choiceDesc, 
+            String nextSceneId, 
+            int pointValue, 
+            Item requiredItem, 
+            List<Item> givenItems){
+        this.number = number;
+        this.choiceDesc = choiceDesc;
+        this.pointValue = pointValue;
+        this.requiredItem = requiredItem;
+        this.givenItems = givenItems;
+    }
     
     // getters and setters
     public String getNextSceneId(){
@@ -56,6 +73,13 @@ public class Choice {
     public void setTransitionText(){
         this.transitionText = transitionText;
     }
+    
+    public List<Item> getGivenItems(){
+        return givenItems;
+    }
+    
+    // get player input
+    public 
     
     // choices available depending on player trait and item
     public boolean isAvailable(Player player){
