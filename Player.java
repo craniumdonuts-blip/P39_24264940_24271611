@@ -14,7 +14,7 @@ public class Player {
     private int totalPoints;
     private Inventory inventory;
     
-    public Player(String name, TraitType trait){
+    public Player(){
         this.name = name;
         this.trait = trait;
         this.totalPoints = 0;
@@ -24,9 +24,17 @@ public class Player {
     public String getName(){
         return name;
     }
+
+    public void setName(String name){
+        this.name = name;
+    }
     
     public TraitType getTrait(){
         return trait;
+    }
+
+    public void setTrait(TraitType trait){
+        this.trait = trait;
     }
     
     public int getTotalPoints(){
