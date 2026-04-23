@@ -15,7 +15,7 @@ public class Game {
 
     private Player player;
     private Scene currentScene;
-    private Map<String, Scene> scenes;
+    private final Map<String, Scene> scenes;
 
     // Game constructor
     public Game() {
@@ -24,17 +24,17 @@ public class Game {
 
     // Start game for new player
     public void start() {
-        initScenes();
         player = new Player();
         selectTrait();
+        initScenes();
         loadScene("s1");
         run();
     }
 
     // Start game for loaded player (continue game)
     public void start(Player loadPlayer, String sceneId) {
-        initScenes();
         this.player = loadPlayer;
+        initScenes();
         loadScene(sceneId);
         run();
     }
@@ -58,15 +58,12 @@ public class Game {
 
     // Load a scene
     public void loadScene(String sceneId) {
-
         Scene next = scenes.get(sceneId);
         if (next != null) {
             currentScene = next;
-
         } else {
             System.out.println("[ERROR] scene " + sceneId);
         }
-
     }
 
     public void processChoice(int num) {
@@ -93,7 +90,6 @@ public class Game {
 
         // Next scene
         loadScene(choice.getNextSceneId());
-
     }
 
     public boolean checkEnding() {
@@ -121,6 +117,10 @@ public class Game {
     // Trait selection
     private void selectTrait() {
         Scanner scanner = new Scanner(System.in);
+
+        System.out.print("enter your name: ");
+        String name = scanner.nextLine().trim();
+        player.setName(name);
 
         System.out.println("who are you, traveller?");
         System.out.println("  1. brave");
@@ -159,12 +159,33 @@ public class Game {
     private void initScenes() {
         // Items
         List<Item> noItems = new ArrayList<>();
+
         List<Item> survivalGuide = new ArrayList<>();
         survivalGuide.add(new Item("Survival Guide"));
+
         List<Item> loot = new ArrayList<>();
         loot.add(new Item("Coin Pouch"));
         loot.add(new Item("Bread"));
         loot.add(new Item("Crystal Dagger"));
+
+        List<Item> mysteryBrew = new ArrayList<>();
+        mysteryBrew.add(new Item("Mystery Brew"));
+
+        List<Item> mysteryBrewAndHealth = new ArrayList<>();
+        mysteryBrewAndHealth.add(new Item("Mystery Brew"));
+        mysteryBrewAndHealth.add(new Item("Health Potion"));
+
+        List<Item> roomVoucher = new ArrayList<>();
+        roomVoucher.add(new Item("Room Voucher"));
+
+        List<Item> cloak = new ArrayList<>();
+        cloak.add(new Item("Cloak"));
+
+        List<Item> coinPouch = new ArrayList<>();
+        coinPouch.add(new Item("Coin Pouch"));
+
+        List<Item> shield = new ArrayList<>();
+        shield.add(new Item("Shield"));
 
         // Opening Scene s1 //
         Scene s1 = new Scene("s1", """
@@ -177,38 +198,40 @@ public class Game {
         s1c1.setTransitionText("As you walk the music fades and the mist lifts,\n"
                 + "the forest feels quiet and serene.");
 
-        Choice s1c2brave = new Choice(2, "Abandon the path", "s2", -10, null, noItems);
-        s1c2brave.addVarDialogue(TraitType.BRAVE,
-                "As you walk the music builds and\n"
-                + "the mist transforms suddenly into thick fog, \n"
-                + "you can barely see ahead of you.\n\n"
-                + "Confidently you don't break pace.\n"
-                + "Even when you see the same tree 3 times...");
-        s1c2brave.addVarDialogue(TraitType.CUNNING,
-                "As you walk the music builds and\n"
-                + "the mist transforms suddenly into thick fog, \n"
-                + "you can barely see ahead of you.\n\n"
-                + "You scan the little ground you can see\n"
-                + "to grab a sharp rock, marking trees as \n"
-                + "you walk, in an attempt to not get lost.");
-        s1c2brave.setTransitionText("As you walk the music builds and\n"
-                + "the mist transforms suddenly into thick fog, \n"
-                + "you can barely see ahead of you.");
-
-        // Timid gets a different choice with survival guide item
-        Choice s1c2timid = new Choice(2, "Abandon the path", "s2", -10, null, survivalGuide);
-        s1c2timid.addVarDialogue(TraitType.TIMID,
-                "As you walk the music builds and\n"
-                + "the mist transforms suddenly into thick fog, \n"
-                + "you can barely see ahead of you.\n\n"
-                + "Wearly you slow your pace, the forest feels unsettling.\n"
-                + "Faitly you hear from all around, \"here...lost one...\""
-                + "A book forms in the mist, dropping flat at"
-                + "your feet. \"Survival Guide\"");
-
-        s1.addChoice(s1c1);
-        // Note: swap s1c2brave for s1c2timid in game logic if player is TIMID
-        s1.addChoice(s1c2brave);
+        if (player.getTrait() == TraitType.TIMID) {
+            Choice s1c2 = new Choice(2, "Abandon the path", "s2", -10, null, survivalGuide);
+            s1c2.setTransitionText("As you walk the music builds and\n"
+                    + "the mist transforms suddenly into thick fog, \n"
+                    + "you can barely see ahead of you.\n\n"
+                    + "Warily you slow your pace, the forest feels unsettling.\n"
+                    + "Faintly you hear from all around, \"here...lost one...\"\n"
+                    + "A book forms in the mist, dropping flat at "
+                    + "your feet. \"Survival Guide\"");
+            s1.addChoice(s1c1);
+            s1.addChoice(s1c2);
+        } else {
+            Choice s1c2 = new Choice(2, "Abandon the path", "s2", -10, null, noItems);
+            if (player.getTrait() == TraitType.BRAVE) {
+                s1c2.setTransitionText("As you walk the music builds and\n"
+                        + "the mist transforms suddenly into thick fog, \n"
+                        + "you can barely see ahead of you.\n\n"
+                        + "Confidently you don't break pace.\n"
+                        + "Even when you see the same tree 3 times...");
+            } else if (player.getTrait() == TraitType.CUNNING) {
+                s1c2.setTransitionText("As you walk the music builds and\n"
+                        + "the mist transforms suddenly into thick fog, \n"
+                        + "you can barely see ahead of you.\n\n"
+                        + "You scan the little ground you can see\n"
+                        + "to grab a sharp rock, marking trees as \n"
+                        + "you walk, in an attempt to not get lost.");
+            } else {
+                s1c2.setTransitionText("As you walk the music builds and\n"
+                        + "the mist transforms suddenly into thick fog, \n"
+                        + "you can barely see ahead of you.");
+            }
+            s1.addChoice(s1c1);
+            s1.addChoice(s1c2);
+        }
         scenes.put(s1.getSceneId(), s1);
 
         // Scene 2 s2 //
@@ -221,35 +244,151 @@ public class Game {
         s2c1.setTransitionText("You walk past the cabin.");
 
         Choice s2c2 = new Choice(2, "Go inside", "s3", 10, null, loot);
-        s2c2.addVarDialogue(TraitType.BRAVE,
-                "You swing open the cabin door, standing alert.\n"
-                + "You scan the room, spotting a chest off to the side. \n"
-                + "Immediately you swing open the chest lid revealing\n"
-                + "supplies, bread, a coin pouch, and a crystal dagger \n"
-                + "that catches your eye.");
-        s2c2.addVarDialogue(TraitType.TIMID,
-                "Carefully you open the cabin door, it smells of \n"
-                + "mold, and dust stirs through the air. Quietly, you make\n"
-                + "your way to a chest in a dark corner, peering in you find\n"
-                + "supplies. Bread, a coin pouch, and a crystal dagger.\n"
-                + "\n"
-                + "You decide to read the survival guide before you continue.\n"
-                + "It says: \"Never stray from the path, for it is the right way\"\n"
-                + "In bold in the center, all of the other pages are blank...");
-        s2c2.addVarDialogue(TraitType.CUNNING,
-                "You grab a nearby branch to push the cabin door\n"
-                + "ajar, you scan the dark gloomy room, the fireplace seems\n"
-                + "recently put out. After deciding its safe, you proceed. \n"
-                + "You find a chest in the darkness, it contains bread, a coin pouch,\n"
-                + "and a crystal dagger. \n"
-                + "'The bread is fresh, somebody lives here' you think, with\n"
-                + "haste you leave the cabin. ");
-        s2c2.setTransitionText("You enter the dark gloomy cabin and find a\n"
-                + "chest, containing bread, a coin pouch, and a crystal dagger.");
+        if (player.getTrait() == TraitType.BRAVE) {
+            s2c2.setTransitionText("You swing open the cabin door, standing alert.\n"
+                    + "You scan the room, spotting a chest off to the side. \n"
+                    + "Immediately you swing open the chest lid revealing\n"
+                    + "supplies, bread, a coin pouch, and a crystal dagger \n"
+                    + "that catches your eye.");
+        } else if (player.getTrait() == TraitType.TIMID) {
+            s2c2.setTransitionText("Carefully you open the cabin door, it smells of \n"
+                    + "mold, and dust stirs through the air. Quietly, you make\n"
+                    + "your way to a chest in a dark corner, peering in you find\n"
+                    + "supplies. Bread, a coin pouch, and a crystal dagger.\n"
+                    + "\n"
+                    + "You decide to read the survival guide before you continue.\n"
+                    + "It says: \"Never stray from the path, for it is the right way\"\n"
+                    + "In bold in the center, all of the other pages are blank...");
+        } else if (player.getTrait() == TraitType.CUNNING) {
+            s2c2.setTransitionText("You grab a nearby branch to push the cabin door\n"
+                    + "ajar, you scan the dark gloomy room, the fireplace seems\n"
+                    + "recently put out. After deciding its safe, you proceed. \n"
+                    + "You find a chest in the darkness, it contains bread, a coin pouch,\n"
+                    + "and a crystal dagger. \n"
+                    + "'The bread is fresh, somebody lives here' you think, with\n"
+                    + "haste you leave the cabin.");
+        } else {
+            s2c2.setTransitionText("You enter the dark gloomy cabin and find a\n"
+                    + "chest, containing bread, a coin pouch, and a crystal dagger.");
+        }
 
         s2.addChoice(s2c1);
         s2.addChoice(s2c2);
         scenes.put(s2.getSceneId(), s2);
+
+        // Scene 3 s3 //
+        Scene s3 = new Scene("s3", """
+                                   The path splits ahead of you, both ways look almost identical. 
+                                   Lamp posts line either side, flickering faintly in the dim light. 
+                                   The air is still, and the usual sounds of the forest have gone quiet.\n""", false);
+
+        // NPC
+        Npc hoodedFigure = new Npc("Hooded Figure", "");
+        s3.setNpc(hoodedFigure);
+
+        Choice s3c1;
+        if (player.getTrait() == TraitType.BRAVE && player.getInventory().hasItem("Crystal Dagger")) {
+            s3c1 = new Choice(1, "Left", "s4", 0, null, noItems);
+            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                    + "something feels off. A hooded figure steps out blocking your way.\n"
+                    + "You don't flinch, drawing the crystal dagger slowly.\n"
+                    + "They pause, then back into the trees without a word.");
+        } else if (player.getTrait() == TraitType.CUNNING && player.getInventory().isEmpty()) {
+            s3c1 = new Choice(1, "Left", "s4", 0, null, noItems);
+            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                    + "something feels off. A hooded figure steps out blocking your way.\n"
+                    + "The figure reaches for you, quick on your feet you duck under their arm,\n"
+                    + "slipping past before they can react. They grasp at nothing as you walk\n"
+                    + "briskly on. You don't look back.");
+        } else {
+            s3c1 = new Choice(1, "Left", "s4", -15, null, noItems);
+            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                    + "something feels off. A hooded figure steps out blocking your way.\n"
+                    + "The figure reaches for you, and before you can react, snatches "
+                    + "something and disappears into the trees.");
+            s3c1.setRemovesItem(true);
+        }
+
+        Choice s3c2 = new Choice(2, "Right", "s4", 5, null, noItems);
+        s3c2.setTransitionText("The lamp posts cast a warm glow as you walk, the path feels calm.\n"
+                + "Faintly in the distance you begin to make out sounds of a town.");
+
+        s3.addChoice(s3c1);
+        s3.addChoice(s3c2);
+        scenes.put(s3.getSceneId(), s3);
+
+        // Scene 4 s4 //
+        // NPC
+        Npc elara = new Npc("Elara", "Welcome, welcome! Every bottle a wonder, every brew a mystery! Take one, consider it a gift from Elara's Emporium!");
+        Npc innOwner = new Npc("Inn Owner", "Ah, a traveller! Don't get many of those passing through lately. I run the inn next door. Here, take this. First night's on me.");
+        Npc halfling = new Npc("Halfling", "Oh... hello. Are you... new here? I don't see many travellers come through. You seem nice.");
+
+        Scene s4 = new Scene("s4", """
+                                   The path opens up and the trees thin out, giving way to a small 
+                                   town. Cobblestone streets wind between timber framed buildings, 
+                                   flower boxes line the windowsills and warm light flickers from within. 
+                                   The smell of wood smoke drifts through the air. A potions shop sits to your 
+                                   left, a tavern further down the road, and a stone bridge arches over 
+                                   the river at the edge of town.\n""", false);
+
+        // NPC overridden if player goes to tavern
+        s4.setNpc(elara);
+
+        Choice s4c1;
+        if (player.getTrait() == TraitType.CUNNING) {
+            s4c1 = new Choice(1, "Potions shop", "s5", 10, null, mysteryBrewAndHealth);
+            s4c1.setTransitionText(elara.getName() + ": \"" + elara.getSpeak(TraitType.CUNNING) + "\"\n"
+                    + "The shop is cluttered with colourful bottles and strange dried herbs\n"
+                    + "hanging from the ceiling. While she chatters away, your eyes wander\n"
+                    + "to a neatly labelled health potion on the shelf behind her. You slip\n"
+                    + "it into your pocket alongside the mystery brew she presses into your\n"
+                    + "hands. She waves you off cheerfully, none the wiser.");
+        } else {
+            s4c1 = new Choice(1, "Potions shop", "s5", 0, null, mysteryBrew);
+            s4c1.setTransitionText(elara.getName() + ": \"" + elara.getSpeak(TraitType.BRAVE) + "\"\n"
+                    + "The shop is cluttered with colourful bottles and strange dried herbs\n"
+                    + "hanging from the ceiling. She thrusts a small bottle into your hands\n"
+                    + "before you can say a word. The label reads \"Mystery Brew.\"\n"
+                    + "You pocket it and leave.");
+        }
+
+        Choice s4c2;
+        if (player.getTrait() == TraitType.TIMID) {
+            s4c2 = new Choice(2, "Tavern", "s5", 10, null, cloak);
+            s4c2.setTransitionText("The tavern is warm and loud, a little overwhelming.\n"
+                    + "You hover near the door until a small halfling at a corner table\n"
+                    + "catches your eye and offers a shy wave. You take a seat beside them.\n"
+                    + halfling.getName() + ": \"" + halfling.getSpeak(TraitType.TIMID) + "\"\n"
+                    + "After a quiet moment they slide their spare cloak across the table.\n"
+                    + "\"You looked cold,\" they say softly.");
+        } else {
+            s4c2 = new Choice(2, "Tavern", "s5", 10, null, roomVoucher);
+            s4c2.setTransitionText("The tavern is warm and loud, the smell of ale and roasted meat\n"
+                    + "thick in the air. A stout man eating alone at the bar spots you\n"
+                    + "and waves you over.\n"
+                    + innOwner.getName() + ": \"" + innOwner.getSpeak(TraitType.BRAVE) + "\"\n"
+                    + "He slides a small voucher across to you with a smile.");
+        }
+
+        Choice s4c3;
+        if (player.getTrait() == TraitType.BRAVE) {
+            s4c3 = new Choice(3, "Bridge", "s5", 10, null, shield);
+            s4c3.setTransitionText("You stride out onto the bridge, the water rushing quietly below.\n"
+                    + "Halfway across something catches your eye — a shield leaning against\n"
+                    + "the railing, left behind or forgotten. You pick it up, giving it a\n"
+                    + "firm knock. Solid. You strap it to your back and carry on.");
+        } else {
+            s4c3 = new Choice(3, "Bridge", "s5", 5, null, coinPouch);
+            s4c3.setTransitionText("The bridge stretches over a wide calm river, the water dark\n"
+                    + "and glassy below. Halfway across you notice a coin pouch wedged\n"
+                    + "between the railings, left behind by someone passing through.\n"
+                    + "You pocket it and take in the view for a moment.");
+        }
+
+        s4.addChoice(s4c1);
+        s4.addChoice(s4c2);
+        s4.addChoice(s4c3);
+        scenes.put(s4.getSceneId(), s4);
     }
 
     // Getters and setters
