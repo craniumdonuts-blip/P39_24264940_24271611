@@ -393,7 +393,7 @@ import java.util.Scanner;
             scenes.put(s4.getSceneId(), s4);
 
             // Scene 5 s5 - Ending //
-            // Scene 5 s5 — The Inn (end scene, triggers ending check) //
+
             Scene s5 = new Scene("s5", """
                                    The inn sits at the end of a cobblestone lane, warm light and 
                                    the sound of chatter spilling out from within. You push open 
@@ -404,15 +404,12 @@ import java.util.Scanner;
             s5.setNpc(innkeeper);
             scenes.put(s5.getSceneId(), s5);
 
-            // =====================================================================
-            // Endings
-            // =====================================================================
-            // NPC: Innkeeper with different dialogue per ending
+
             Npc innkeeperBad = new Npc("Innkeeper", "I am so sorry, we have no rooms available.");
             Npc innkeeperNeutral = new Npc("Innkeeper", "You're in luck! One room left.");
             Npc innkeeperGood = new Npc("Innkeeper", "In the meantime feel free to join the townsfolk feast!");
 
-            // Bad ending — -20 to -1 //
+     
             String badDesc;
             if (player.getTrait() == TraitType.BRAVE) {
                 badDesc = "You shrug it off and find a dry spot on the street outside, oh well.";
@@ -427,7 +424,7 @@ import java.util.Scanner;
             bad.setNpc(innkeeperBad);
             scenes.put(bad.getSceneId(), bad);
 
-            // Neutral ending — 0 to 19 //
+         
             String neutralDesc;
             if (player.getTrait() == TraitType.BRAVE) {
                 neutralDesc = "You drop your things, before falling into bed.\n"
@@ -444,7 +441,7 @@ import java.util.Scanner;
             neutral.setNpc(innkeeperNeutral);
             scenes.put(neutral.getSceneId(), neutral);
 
-            // Good ending — 20 to 40 //
+      
             String goodDesc;
             if (player.getTrait() == TraitType.BRAVE) {
                 goodDesc = "You don't need to be asked twice. You spend the night swapping\n"
