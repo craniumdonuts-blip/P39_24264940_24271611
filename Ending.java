@@ -1,4 +1,4 @@
-package Assignment1;
+package project1;
 
 /**
  *
@@ -19,13 +19,13 @@ public class Ending extends Scene {
         int points = player.getTotalPoints();
         return points >= minPoints && points <= maxPoints;
     }
-    
+
     public int getMinPoints() {
         return minPoints;
     }
-    
+
     public int getMaxPoints() {
         return maxPoints;
     }
-    
+
 }
