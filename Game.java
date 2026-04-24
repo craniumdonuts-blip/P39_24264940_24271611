@@ -84,7 +84,8 @@ public class Game {
 
     // Processing choice
     public void processChoice(int num) {
-        Choice choice = currentScene.getChoice(num);
+        Choice choice = currentScene.getChoice(num, player);
+
 
         if (choice == null) {
             System.out.println("[ERROR] choice");
@@ -334,25 +335,10 @@ public class Game {
         s3c2.setTransitionText("The lamp posts cast a warm glow as you walk, the path feels calm.\n"
                 + "Faintly in the distance you begin to make out sounds of a town.");
 
-        
-        
-        
-        
-        if (player.getTrait() == TraitType.TIMID) {
-            s3.addChoice(s3c1default);
-        }
-        
-        if (player.getTrait() == TraitType.BRAVE && !s3c1brave.isAvailable(player)) {
-            s3.addChoice(s3c1default);
-        } else if (player.getTrait() == TraitType.BRAVE && s3c1brave.isAvailable(player)) {
-            s3.addChoice(s3c1brave);
-        }
-        
-        if (player.getTrait() == TraitType.CUNNING && !player.getInventory().hasItem(null)) {
-            s3.addChoice(s3c1default);
-        } else if (player.getTrait() == TraitType.CUNNING && player.getInventory().hasItem(null)) {
-            s3.addChoice(s3c1cunning);
-        }
+
+        s3.addChoice(s3c1brave);
+        s3.addChoice(s3c1cunning);
+        s3.addChoice(s3c1default);
 
         s3.addChoice(s3c2);
         scenes.put(s3.getSceneId(), s3);
