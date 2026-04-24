@@ -1,4 +1,4 @@
-package Assignment1;
+package project1;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
