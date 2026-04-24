@@ -1,4 +1,4 @@
-package Assignment1;
+package project1;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +28,12 @@ public class Npc {
         }
         return defSpeak;
     }
-    
+
     // Add trait specific dialogue
     public void addVarDialogue(TraitType trait, String varDialogue) {
         varSpeak.put(trait, varDialogue);
     }
-    
+
     public String getName() {
         return name;
     }
