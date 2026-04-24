@@ -14,17 +14,18 @@ public class Player {
     private int totalPoints;
     private Inventory inventory;
     
+    // constructor 
     public Player(){
-        this.name = name;
-        this.trait = trait;
+        this.name = "";
         this.totalPoints = 0;
         this.inventory = new Inventory();
     }
     
+    // getters and setters
     public String getName(){
         return name;
     }
-
+    
     public void setName(String name){
         this.name = name;
     }
@@ -32,7 +33,7 @@ public class Player {
     public TraitType getTrait(){
         return trait;
     }
-
+    
     public void setTrait(TraitType trait){
         this.trait = trait;
     }
@@ -41,6 +42,7 @@ public class Player {
         return totalPoints;
     }
     
+    // be able to plus/minus total points
     public void changeTotalPoints(int points){
         totalPoints += points;
     }
