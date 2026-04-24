@@ -20,7 +20,7 @@ public class Inventory {
     public List<Item> getItems(){
         return items;
     }
-
+    
     public void addItem(Item item){
         items.add(item);
     }
@@ -81,6 +81,10 @@ public class Inventory {
             Item item = new Item(parts[i]);
             items.add(item);
         }
+    }
+    
+    public boolean isEmpty(){
+        return items.isEmpty();
     }
     
 }
