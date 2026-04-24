@@ -1,4 +1,4 @@
-package project1;
+package Assignment1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author ella
  */
-public class Scene {
+public class Scene implements Displayable{
 
     private String sceneId;
     private String sceneDesc;
