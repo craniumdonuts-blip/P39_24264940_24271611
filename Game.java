@@ -1,4 +1,4 @@
-package Assignment1;
+package project1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,6 @@ import java.util.Scanner;
  *
  * @author ella
  */
-  
-
 public class Game {
     // Calling other classes - check names & requirements 
 
@@ -19,6 +17,7 @@ public class Game {
     private Scene currentScene;
     private final Map<String, Scene> scenes;
     private SaveManager saveManager;
+    private Inventory inventory;
 
     // Game constructor
     public Game() {
@@ -54,15 +53,15 @@ public class Game {
             }
 
             List<Choice> available = currentScene.getAvailableChoices(player);
-            for (Choice c : available){
+            for (Choice c : available) {
                 System.out.println(" " + c.getNumber() + ". " + c.getChoiceDesc());
             }
             System.out.println(" 0. Save game");
-            
+
             int chosen = Choice.getInput();
-            
+
             // ask if player wants to save
-            if(chosen == 0){
+            if (chosen == 0) {
                 System.out.print("Save to slot (1-5): ");
                 int slot = Choice.getInput();
                 saveManager.save(player, currentScene.getSceneId(), slot);
@@ -82,7 +81,7 @@ public class Game {
             System.out.println("[ERROR] scene " + sceneId);
         }
     }
-    
+
     // Processing choice
     public void processChoice(int num) {
         Choice choice = currentScene.getChoice(num);
@@ -105,9 +104,9 @@ public class Game {
             player.getInventory().addItem(item);
             System.out.println("you got: " + item.getName());
         }
-        
+
         // Remove random item if choice triggers it
-        if (choice.isRemovesItem()){
+        if (choice.isRemovesItem()) {
             player.getInventory().removeRandomItem();
         }
 
@@ -212,7 +211,7 @@ public class Game {
 
         // Opening Scene s1 //
         Scene s1 = new Scene("s1", """
-                               You wake slowly, the dawn light peers down through the trees, 
+                               \nYou wake slowly, the dawn light peers down through the trees, 
                                dissipating into layers of mist. A swift breeze flutters leaves, 
                                carrying subtle sounds of song, it seems you are not alone here. 
                                Surrounded by forest, you notice a path stretching ahead of you.\n""", false);
@@ -259,7 +258,7 @@ public class Game {
 
         // Scene 2 s2 //
         Scene s2 = new Scene("s2", """
-                               Through the trees you make out a small cabin. Moss and
+                               \nThrough the trees you make out a small cabin. Moss and
                                vines have overtaken the walls, which are half rubble...
                                But strangely enough, the chimney is smoking.\n""", false);
         // Choices
@@ -301,67 +300,82 @@ public class Game {
 
         // Scene 3 s3 //
         Scene s3 = new Scene("s3", """
-                               The path splits ahead of you, both ways look almost identical. 
+                               \nThe path splits ahead of you, both ways look almost identical. 
                                Lamp posts line either side, flickering faintly in the dim light. 
                                The air is still, and the usual sounds of the forest have gone quiet.\n""", false);
 
-        // NPC
-        Npc hoodedFigure = new Npc("Hooded Figure", "...");
-        s3.setNpc(hoodedFigure);
-        
-        Choice s3c1;
-        if (player.getTrait() == TraitType.BRAVE && player.getInventory().hasItem("Crystal Dagger")) {
-            s3c1 = new Choice(1, "Left", "s4", 0, null, noItems);
-            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
-                    + "something feels off. A hooded figure steps out blocking your way.\n"
-                    + "You don't flinch, drawing the crystal dagger slowly.\n"
-                    + "They pause, then back into the trees without a word.");
-        } else if (player.getTrait() == TraitType.CUNNING && player.getInventory().isEmpty()) {
-            s3c1 = new Choice(1, "Left", "s4", 0, null, noItems);
-            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
-                    + "something feels off. A hooded figure steps out blocking your way.\n"
-                    + "The figure reaches for you, quick on your feet you duck under their arm,\n"
-                    + "slipping past before they can react. They grasp at nothing as you walk\n"
-                    + "briskly on. You don't look back.");
-        } else {
-            s3c1 = new Choice(1, "Left", "s4", -15, null, noItems);
-            s3c1.setTransitionText("The lamp posts grow dimmer as you walk,\n"
-                    + "something feels off. A hooded figure steps out blocking your way.\n"
-                    + "The figure reaches for you, and before you can react, snatches "
-                    + "something and disappears into the trees.");
-            s3c1.setRemovesItem(true);
-        }
+        // Left — brave with dagger (checked at runtime via isAvailable)
+        Choice s3c1brave = new Choice(1, "Left", "s4", 0, new Item("Crystal Dagger"), noItems);
+        s3c1brave.setRequiredTrait(TraitType.BRAVE);
+        s3c1brave.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                + "something feels off. A hooded figure steps out blocking your way.\n"
+                + "You don't flinch, drawing the crystal dagger slowly.\n"
+                + "They pause, then back into the trees without a word.");
+
+        // Left — cunning with empty inventory (checked at runtime via isAvailable)
+        Choice s3c1cunning = new Choice(1, "Left", "s4", 0, null, noItems);
+        s3c1cunning.setRequiredTrait(TraitType.CUNNING);
+        s3c1cunning.setRequiresEmptyInventory(true);
+        s3c1cunning.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                + "something feels off. A hooded figure steps out blocking your way.\n"
+                + "The figure reaches for you, quick on your feet you duck under their arm,\n"
+                + "slipping past before they can react. They grasp at nothing as you walk\n"
+                + "briskly on. You don't look back.");
+
+        // Left — everyone else, gets robbed
+        Choice s3c1default = new Choice(1, "Left", "s4", -15, null, noItems);
+        s3c1default.setTransitionText("The lamp posts grow dimmer as you walk,\n"
+                + "something feels off. A hooded figure steps out blocking your way.\n"
+                + "The figure reaches for you, and before you can react, snatches\n"
+                + "something and disappears into the trees.");
+        s3c1default.setRemovesItem(true);
 
         Choice s3c2 = new Choice(2, "Right", "s4", 5, null, noItems);
         s3c2.setTransitionText("The lamp posts cast a warm glow as you walk, the path feels calm.\n"
                 + "Faintly in the distance you begin to make out sounds of a town.");
 
-        s3.addChoice(s3c1);
+        
+        
+        
+        
+        if (player.getTrait() == TraitType.TIMID) {
+            s3.addChoice(s3c1default);
+        }
+        
+        if (player.getTrait() == TraitType.BRAVE && !s3c1brave.isAvailable(player)) {
+            s3.addChoice(s3c1default);
+        } else if (player.getTrait() == TraitType.BRAVE && s3c1brave.isAvailable(player)) {
+            s3.addChoice(s3c1brave);
+        }
+        
+        if (player.getTrait() == TraitType.CUNNING && !player.getInventory().hasItem(null)) {
+            s3.addChoice(s3c1default);
+        } else if (player.getTrait() == TraitType.CUNNING && player.getInventory().hasItem(null)) {
+            s3.addChoice(s3c1cunning);
+        }
+
         s3.addChoice(s3c2);
         scenes.put(s3.getSceneId(), s3);
 
         // Scene 4 s4 //
         // NPC
-        Npc elara = new Npc("Elara", "Welcome, welcome! Every bottle a wonder, every brew a mystery! Take one, consider it a gift from Elara's Emporium!");
-        Npc innOwner = new Npc("Inn Owner", "Ah, a traveller! Don't get many of those passing through lately. I run the inn next door. Here, take this. First night's on me.");
-        Npc halfling = new Npc("Halfling", "Oh... hello. Are you... new here? I don't see many travellers come through. You seem nice.");
+        Npc elara = new Npc("Elara", "Welcome, welcome! Every bottle a wonder, every brew a mystery!\nTake one, consider it a gift from Elara's Emporium!");
+        Npc innOwner = new Npc("Inn Owner", "Ah, a traveller! Don't get many of those passing through lately.\nI run the inn next door. Here, take this. First night's on me.");
+        Npc halfling = new Npc("Halfling", "Oh... hello. Are you... new here? I don't see many travellers\ncome through. You seem nice.");
 
         Scene s4 = new Scene("s4", """
-                               The path opens up and the trees thin out, giving way to a small 
+                               \nThe path opens up and the trees thin out, giving way to a small 
                                town. Cobblestone streets wind between timber framed buildings, 
                                flower boxes line the windowsills and warm light flickers from within. 
                                The smell of wood smoke drifts through the air. A potions shop sits to your 
                                left, a tavern further down the road, and a stone bridge arches over 
                                the river at the edge of town.\n""", false);
 
-        // NPC overridden if player goes to tavern
-        s4.setNpc(elara);
-
         Choice s4c1;
         if (player.getTrait() == TraitType.CUNNING) {
             s4c1 = new Choice(1, "Potions shop", "s5", 10, null, mysteryBrewAndHealth);
             s4c1.setTransitionText(elara.getName() + ": \"" + elara.getSpeak(TraitType.CUNNING) + "\"\n"
-                    + "The shop is cluttered with colourful bottles and strange dried herbs\n"
+                    + "\nThe shop is cluttered with colourful bottles and strange dried herbs\n"
                     + "hanging from the ceiling. While she chatters away, your eyes wander\n"
                     + "to a neatly labelled health potion on the shelf behind her. You slip\n"
                     + "it into your pocket alongside the mystery brew she presses into your\n"
@@ -369,7 +383,7 @@ public class Game {
         } else {
             s4c1 = new Choice(1, "Potions shop", "s5", 0, null, mysteryBrew);
             s4c1.setTransitionText(elara.getName() + ": \"" + elara.getSpeak(TraitType.BRAVE) + "\"\n"
-                    + "The shop is cluttered with colourful bottles and strange dried herbs\n"
+                    + "\nThe shop is cluttered with colourful bottles and strange dried herbs\n"
                     + "hanging from the ceiling. She thrusts a small bottle into your hands\n"
                     + "before you can say a word. The label reads \"Mystery Brew.\"\n"
                     + "You pocket it and leave.");
@@ -397,7 +411,7 @@ public class Game {
         if (player.getTrait() == TraitType.BRAVE) {
             s4c3 = new Choice(3, "Bridge", "s5", 10, null, shield);
             s4c3.setTransitionText("You stride out onto the bridge, the water rushing quietly below.\n"
-                    + "Halfway across something catches your eye — a shield leaning against\n"
+                    + "Halfway across something catches your eye, a shield leaning against\n"
                     + "the railing, left behind or forgotten. You pick it up, giving it a\n"
                     + "firm knock. Solid. You strap it to your back and carry on.");
         } else {
@@ -414,47 +428,41 @@ public class Game {
         scenes.put(s4.getSceneId(), s4);
 
         // Scene 5 s5 - Ending //
-
         Scene s5 = new Scene("s5", """
-                               The inn sits at the end of a cobblestone lane, warm light and 
+                               \nThe inn sits at the end of a cobblestone lane, warm light and 
                                the sound of chatter spilling out from within. You push open 
                                the door to find the place busy and lively, locals filling 
                                every table. You make your way to the front desk.\n""", true);
 
-        Npc innkeeper = new Npc("Innkeeper", "Welcome to the Inn! Let me see what we can do for you.");
-        s5.setNpc(innkeeper);
         scenes.put(s5.getSceneId(), s5);
 
-
-        Npc innkeeperBad = new Npc("Innkeeper", "I am so sorry, we have no rooms available.");
-        Npc innkeeperNeutral = new Npc("Innkeeper", "You're in luck! One room left.");
-        Npc innkeeperGood = new Npc("Innkeeper", "In the meantime feel free to join the townsfolk feast!");
-
+        Npc innkeeperBad = new Npc("Innkeeper", "Welcome to the Inn! Let me see what we can do for you.\"\n  \"I am so sorry, we have no rooms available.");
+        Npc innkeeperNeutral = new Npc("Innkeeper", "Welcome to the Inn! Let me see what we can do for you.\"\n  \"You're in luck! One room left.");
+        Npc innkeeperGood = new Npc("Innkeeper", "Welcome to the Inn! Let me see what we can do for you.\"\n  \"In the meantime feel free to join the townsfolk feast!");
 
         String badDesc;
         if (player.getTrait() == TraitType.BRAVE) {
-            badDesc = "You shrug it off and find a dry spot on the street outside, oh well.";
+            badDesc = "\nYou shrug it off and find a dry spot on the street outside, oh well.";
         } else if (player.getTrait() == TraitType.CUNNING) {
-            badDesc = "You peek around the corner, but you can't see any spare rooms.\n"
+            badDesc = "\nYou peek around the corner, but you can't see any spare rooms.\n"
                     + "You huddle behind the Inn to sleep.";
         } else {
-            badDesc = "You thank them quietly, and find a sheltered spot nearby.\n"
+            badDesc = "\nYou thank them quietly, and find a sheltered spot nearby.\n"
                     + "This will be a long night.";
         }
         Ending bad = new Ending("bad", badDesc, -20, -1);
         bad.setNpc(innkeeperBad);
         scenes.put(bad.getSceneId(), bad);
 
-
         String neutralDesc;
         if (player.getTrait() == TraitType.BRAVE) {
-            neutralDesc = "You drop your things, before falling into bed.\n"
+            neutralDesc = "\nYou drop your things, before falling into bed.\n"
                     + "You are asleep almost immediately.";
         } else if (player.getTrait() == TraitType.CUNNING) {
-            neutralDesc = "You give the room a quick scan, nothing unordinary.\n"
+            neutralDesc = "\nYou give the room a quick scan, nothing unordinary.\n"
                     + "Satisfied, you settle into bed and sleep soundly.";
         } else {
-            neutralDesc = "You thank them quietly and head upstairs. The noise from below\n"
+            neutralDesc = "\nYou thank them quietly and head upstairs. The noise from below\n"
                     + "slowly fades as you pull the blanket up, relieved to have a safe\n"
                     + "place to rest. You sleep well.";
         }
@@ -462,19 +470,18 @@ public class Game {
         neutral.setNpc(innkeeperNeutral);
         scenes.put(neutral.getSceneId(), neutral);
 
-
         String goodDesc;
         if (player.getTrait() == TraitType.BRAVE) {
-            goodDesc = "You don't need to be asked twice. You spend the night swapping\n"
+            goodDesc = "\nYou don't need to be asked twice. You spend the night swapping\n"
                     + "stories over a feast, laughing loud and eating well.\n"
                     + "You head to bed confident and excited for the journey.";
         } else if (player.getTrait() == TraitType.CUNNING) {
-            goodDesc = "You take a seat, listening more than talking, picking up every\n"
+            goodDesc = "\nYou take a seat, listening more than talking, picking up every\n"
                     + "bit of local gossip you can. By the end of the night you know\n"
                     + "more about this town than most people who live here.\n"
                     + "You head to your room quietly satisfied.";
         } else {
-            goodDesc = "You hesitate, then take a seat at the edge of the group.\n"
+            goodDesc = "\nYou hesitate, then take a seat at the edge of the group.\n"
                     + "By the end of the night you are laughing and making friends.\n"
                     + "You head to bed feeling lighter than you have in a while.";
         }
@@ -482,7 +489,7 @@ public class Game {
         good.setNpc(innkeeperGood);
         scenes.put(good.getSceneId(), good);
     }
-    
+
     // Getters and setters
     public Player getPlayer() {
         return player;
@@ -499,5 +506,5 @@ public class Game {
     public Map<String, Scene> getScenes() {
         return scenes;
     }
-    
+
 }
