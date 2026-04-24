@@ -103,21 +103,34 @@ public class Choice {
     }
 
     // choices available depending on player trait and item
+// Replace the existing isAvailable method with this exact implementation
     public boolean isAvailable(Player player) {
-        if (requiredTrait != null) {
-            if (player.getTrait() != requiredTrait) {
+        if (player == null) {
+            return false;
+        }
+
+        // Check required trait
+        if (this.requiredTrait != null && player.getTrait() != this.requiredTrait) {
+            return false;
+        }
+
+        // Check requires empty inventory (true means inventory must have zero items)
+        if (this.requiresEmptyInventory) {
+            Inventory inv = player.getInventory();
+            if (inv == null || !inv.isEmpty()) {
                 return false;
             }
         }
-        
 
-
-        if (requiredItem != null) {
-            if (!player.getInventory().hasItem(requiredItem.getName())) {
+        // Check required item (if any) by name using Inventory.hasItem(String)
+        if (this.requiredItem != null) {
+            Inventory inv = player.getInventory();
+            if (inv == null || !inv.hasItem(this.requiredItem.getName())) {
                 return false;
             }
         }
 
+        // All checks passed
         return true;
     }
 
@@ -130,6 +143,5 @@ public class Choice {
     public boolean isRemovesItem() {
         return removesItem;
     }
-
 
 }
