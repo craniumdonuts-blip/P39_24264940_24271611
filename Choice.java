@@ -5,6 +5,7 @@
 package Assignment1;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -19,10 +20,8 @@ public class Choice {
     private List<Item> givenItems;
     private int number; 
     private String transitionText;
+    private boolean removesItem;
     
-    // Choice s1c1 = new Choice(1, "Follow the path", "s2", 10, null, noItems);
-
-    // constructor
     public Choice (
             int number, 
             String choiceDesc, 
@@ -32,6 +31,7 @@ public class Choice {
             List<Item> givenItems){
         this.number = number;
         this.choiceDesc = choiceDesc;
+        this.nextSceneID = nextSceneId;
         this.pointValue = pointValue;
         this.requiredItem = requiredItem;
         this.givenItems = givenItems;
@@ -45,32 +45,28 @@ public class Choice {
     public String getChoiceDesc(){
         return choiceDesc;
     }
-    
-    public void setChoiceDesc(){
+    public void setChoiceDesc(String choiceDesc){
         this.choiceDesc = choiceDesc;
     }
     
     public int getNumber(){
         return number;
     }
-    
-    public void setNumber(){
+    public void setNumber(int number){
         this.number = number;
     }
     
     public int getPointValue(){
         return pointValue;
     }
-    
-    public void setPointValue(){
+    public void setPointValue(int pointValue){
         this.pointValue = pointValue;
     }
     
     public String getTransitionText(){
         return transitionText;
     }
-    
-    public void setTransitionText(){
+    public void setTransitionText(String transitionText){
         this.transitionText = transitionText;
     }
     
@@ -78,8 +74,22 @@ public class Choice {
         return givenItems;
     }
     
+    public void setRemovesItem(boolean removesItem){
+        this.removesItem = removesItem;
+    }
+    
     // get player input
-    public 
+    public static int getInput(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("\n> ");
+        
+        try{
+            return Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e){
+            System.out.println("Please enter a valid number.");
+            return getInput(); //retry
+        }
+    }
     
     // choices available depending on player trait and item
     public boolean isAvailable(Player player){
@@ -100,6 +110,11 @@ public class Choice {
     // plus/minus points from player total points depending on the point value of choice
     public void applyPointEffect(Player player){
         player.changeTotalPoints(pointValue);
+    }
+    
+    // check if choice needs to remove item
+    public boolean isRemovesItem(){
+        return removesItem;
     }
     
 }
