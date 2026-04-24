@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Assignment1;
+package project1;
 
 import java.util.List;
 import java.util.Scanner;
@@ -12,23 +8,26 @@ import java.util.Scanner;
  * @author angie
  */
 public class Choice {
+
     private int pointValue;
     private String choiceDesc;
     private Item requiredItem;
     private TraitType requiredTrait;
     private String nextSceneID;
     private List<Item> givenItems;
-    private int number; 
+    private int number;
     private String transitionText;
     private boolean removesItem;
-    
-    public Choice (
-            int number, 
-            String choiceDesc, 
-            String nextSceneId, 
-            int pointValue, 
-            Item requiredItem, 
-            List<Item> givenItems){
+    private boolean requiresEmptyInventory;
+    private Scene scene;
+
+    public Choice(
+            int number,
+            String choiceDesc,
+            String nextSceneId,
+            int pointValue,
+            Item requiredItem,
+            List<Item> givenItems) {
         this.number = number;
         this.choiceDesc = choiceDesc;
         this.nextSceneID = nextSceneId;
@@ -36,85 +35,101 @@ public class Choice {
         this.requiredItem = requiredItem;
         this.givenItems = givenItems;
     }
-    
+
     // getters and setters
-    public String getNextSceneId(){
+    public String getNextSceneId() {
         return nextSceneID;
     }
-    
-    public String getChoiceDesc(){
+
+    public String getChoiceDesc() {
         return choiceDesc;
     }
-    public void setChoiceDesc(String choiceDesc){
+
+    public void setChoiceDesc(String choiceDesc) {
         this.choiceDesc = choiceDesc;
     }
-    
-    public int getNumber(){
+
+    public int getNumber() {
         return number;
     }
-    public void setNumber(int number){
+
+    public void setNumber(int number) {
         this.number = number;
     }
-    
-    public int getPointValue(){
+
+    public int getPointValue() {
         return pointValue;
     }
-    public void setPointValue(int pointValue){
+
+    public void setPointValue(int pointValue) {
         this.pointValue = pointValue;
     }
-    
-    public String getTransitionText(){
+
+    public String getTransitionText() {
         return transitionText;
     }
-    public void setTransitionText(String transitionText){
+
+    public void setTransitionText(String transitionText) {
         this.transitionText = transitionText;
     }
-    
-    public List<Item> getGivenItems(){
+
+    public List<Item> getGivenItems() {
         return givenItems;
     }
-    
-    public void setRemovesItem(boolean removesItem){
+
+    public void setRemovesItem(boolean removesItem) {
         this.removesItem = removesItem;
     }
-    
+
+    public void setRequiredTrait(TraitType trait) {
+        this.requiredTrait = trait;
+    }
+
+    public void setRequiresEmptyInventory(boolean val) {
+        this.requiresEmptyInventory = val;
+    }
+
     // get player input
-    public static int getInput(){
+    public static int getInput() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\n> ");
-        
-        try{
+
+        try {
             return Integer.parseInt(scanner.nextLine().trim());
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Please enter a valid number.");
             return getInput(); //retry
         }
     }
-    
+
     // choices available depending on player trait and item
-    public boolean isAvailable(Player player){
-        if (requiredTrait != null){
-            if (player.getTrait() != requiredTrait){
+    public boolean isAvailable(Player player) {
+        if (requiredTrait != null) {
+            if (player.getTrait() != requiredTrait) {
                 return false;
             }
         }
         
-        if (requiredItem != null){
-            if (!player.getInventory().hasItem(requiredItem.getName())){
+
+
+        if (requiredItem != null) {
+            if (!player.getInventory().hasItem(requiredItem.getName())) {
                 return false;
             }
         }
+
         return true;
     }
-    
+
     // plus/minus points from player total points depending on the point value of choice
-    public void applyPointEffect(Player player){
+    public void applyPointEffect(Player player) {
         player.changeTotalPoints(pointValue);
     }
-    
+
     // check if choice needs to remove item
-    public boolean isRemovesItem(){
+    public boolean isRemovesItem() {
         return removesItem;
     }
-    
+
+
 }
