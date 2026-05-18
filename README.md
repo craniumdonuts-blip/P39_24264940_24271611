@@ -36,4 +36,5 @@ Steps for Project 2
     - Zero manual config
     - Git history is up to date
     - AI usage log
+    - Contribution report
     - Project video
